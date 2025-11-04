@@ -1,8 +1,10 @@
+<script setup>
+import { ref, onMounted } from 'vue'
+import AppHeader from './components/AppHeader.vue'
+</script>
+
 <template>
-  <div class="test">123</div>
-  <h1 class="text-3xl font-bold underline">Hello world!</h1>
+  <div class="min-h-screen bg-[#141414] text-white font-sans overflow-x-hidden">
+    <AppHeader />
+  </div>
 </template>
-
-<script setup></script>
-
-<style scoped></style>
