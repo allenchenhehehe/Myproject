@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+.test {
+  font-size: large;
+  color: blueviolet;
+}
