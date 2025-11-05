@@ -3,9 +3,9 @@ import { ref, onMounted } from 'vue'
 import AppHeader from './components/AppHeader.vue'
 import HeroBanner from './components/HeroBanner.vue'
 const featuredContent = ref({
-    title: 'StrangerThing',
-    yaer: 1987,
-    rating: decription,
+    title: '刺客567 feat. 雞大寶',
+    rating: '8.7',
+    imageUrl: '/hero.webp',
 })
 </script>
 

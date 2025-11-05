@@ -15,7 +15,7 @@ defineProps({
             <div class="max-w-2xl">
                 <div class="flex items-center gap-4 mb-3">
                     <h1 class="text-5xl font-bold text-white">{{ featured.title }}</h1>
-                    <div class="flex items-center bg-amber-500 px-3 py-1 rounded-md">
+                    <div class="flex items-center bg-red-500 px-3 py-1 rounded-md">
                         <Icon icon="mdi:star" class="text-yellow-300 mr-1" width="18" />
                         <span class="font-bold">{{ featured.rating }}</span>
                     </div>
