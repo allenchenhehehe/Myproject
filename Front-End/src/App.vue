@@ -4,7 +4,7 @@ import AppHeader from './components/AppHeader.vue'
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#fefae0] text-white font-sans overflow-x-hidden">
-    <AppHeader />
-  </div>
+    <div class="min-h-screen bg-[#141414] text-white font-sans overflow-x-hidden">
+        <AppHeader />
+    </div>
 </template>
