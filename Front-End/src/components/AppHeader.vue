@@ -81,8 +81,9 @@ const inputClasses = computed(() => ({
                         :key="link.name"
                         :class="{
                             'text-white font-bold': link.active,
-                            'text-[#757575] hover:text-white': !link.active,
+                            'text-[#757575] hover:text-[#ff5400]': !link.active,
                         }"
+                        class="text-base font-medium transition-colors"
                     >
                         {{ link.name }}
                     </a>
