@@ -68,13 +68,13 @@ const inputClasses = computed(() => ({
 
 <template>
     <header class="fixed top-0 w-full max-w-screen overflow-x-hidden z-50 bg-[#000000]/90 backdrop-blur-sm">
-        <div class="px-8 py-4 relative">
-            <div class="absolute left-8 top-1/2 -translate-y-1/2 z-10">
-                <div class="text-3xl font-bold text-[#ff5400]">5Dmax</div>
+        <div class="px-8 py-4 relative border-8 border-amber-300">
+            <div class="absolute left-8 top-1/2 -translate-y-1/2 z-10 border-4 border-blue-400">
+                <div class="text-3xl font-bold text-[#ff5400] border-2 border-red-300">5Dmax</div>
             </div>
 
-            <div class="flex justify-center">
-                <nav class="items-center space-x-6 text-sm">
+            <div class="flex justify-center border-2 border-blue-400">
+                <nav class="items-center space-x-6 text-sm border-2 border-red-300">
                     <a
                         href="#"
                         v-for="link in navLinks"
@@ -90,7 +90,7 @@ const inputClasses = computed(() => ({
                 </nav>
             </div>
 
-            <div class="absolute right-8 top-1/2 -translate-y-1/2 z-10 flex items-center space-x-4">
+            <div class="absolute right-8 top-1/2 -translate-y-1/2 z-10 flex items-center space-x-4  border-2 border-red-300">
                 <div
                     :class="[
                         // 基礎樣式：霧化玻璃、圓角、過渡動畫
@@ -110,7 +110,7 @@ const inputClasses = computed(() => ({
                         type="text"
                         placeholder="Search..."
                         :class="[
-                            'flex-shrink-0 bg-transparent text-white placeholder-gray-400 focus:outline-none text-sm',
+                            'shrink-0 bg-transparent text-white placeholder-gray-400 focus:outline-none text-sm',
                             'transition-all duration-300 ease-in-out',
                             inputClasses, // 應用計算屬性來控制透明度和寬度
                         ]"
