@@ -1,18 +1,22 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import Login from './components/Users/Login.vue'
+import SignUp from './components/Users/SignUp.vue'
 import AppHeader from './components/AppHeader.vue'
-import SignUp from './components/SignUp.vue'
-const featuredContent = ref({
-    title: '刺客伍陸柒 feat. 雞大寶',
-    rating: '8.7',
-    imageUrl: '/hero.webp',
-    year: '1998',
-    seasons: '4Seasons',
-})
+import ForgetPassword from './components/Users/ForgetPassword.vue'
+import { STATUS_LOGIN, STATUS_SIGNUP, STATUS_NAVBAR, STATUS_FORGET_PASSWORD } from './libs/constants'
+const status = ref(STATUS_LOGIN)
+const gotoSignup = () => (status.value = STATUS_SIGNUP)
+const gotoLogin = () => (status.value = STATUS_LOGIN)
+const gotoNavbar = () => (status.value = STATUS_NAVBAR)
+const gotoForget = () => (status.value = STATUS_FORGET_PASSWORD)
 </script>
 
 <template>
     <div class="min-h-screen bg-[#757575] text-white font-sans overflow-x-hidden">
-        <SignUp />
+        <Login @signup="gotoSignup" @navbar="gotoNavbar" @forgetpassword="gotoForget" v-if="status == STATUS_LOGIN" />
+        <SignUp @login="gotoLogin" v-if="status == STATUS_SIGNUP" />
+        <AppHeader v-if="status == STATUS_NAVBAR" />
+        <ForgetPassword @login="gotoLogin" v-if="status == STATUS_FORGET_PASSWORD" />
     </div>
 </template>

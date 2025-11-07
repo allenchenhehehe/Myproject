@@ -1,0 +1,5 @@
+const STATUS_LOGIN = 'login'
+const STATUS_SIGNUP = 'signup'
+const STATUS_NAVBAR = 'navbar'
+const STATUS_FORGET_PASSWORD = 'forgetpassword'
+export { STATUS_LOGIN, STATUS_SIGNUP, STATUS_NAVBAR, STATUS_FORGET_PASSWORD }
