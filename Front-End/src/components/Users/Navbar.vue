@@ -1,14 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-const navLinks = ref([
-    { name: 'Home', active: true },
-    { name: 'My Fridge', active: false },
-    { name: 'Recipes', active: false },
-    { name: 'Shopping List', active: false },
-])
-// 【注意】請確保您已安裝並導入 Icon 組件，例如：
-// import { Icon } from '@iconify/vue';
+const props = defineProps(['currentPage'])
+const emit = defineEmits(['change-page'])
 
+const navLinks = ref([{ name: 'Home' }, { name: 'My Fridge' }, { name: 'Recipes' }, { name: 'Shopping List' }])
 // 1. 狀態管理
 const isHovered = ref(false) // 追蹤滑鼠是否懸停在容器上 (用於預覽展開)
 const isLocked = ref(false) // 追蹤是否被點擊鎖定 (使用者正在輸入)
@@ -54,7 +49,19 @@ const handleInputBlur = () => {
     // 如果此時滑鼠不在容器上，搜尋框會自動收縮。
     isLocked.value = false
 }
-
+const getLinkClasses = (linkName) => {
+    // 關鍵：判斷 linkName 是否等於父組件傳來的 props.currentPage
+    const isActive = linkName === props.currentPage
+    return [
+        'px-6 py-2.5 rounded-full cursor-pointer transition-all duration-100 ease-in-out whitespace-nowrap text-base font-semibold',
+        {
+            // 活躍狀態
+            'bg-orange-100 text-[#ff5400] shadow-lg scale-105 border-b-3 border-[#ff5400]': isActive,
+            // 非活躍狀態
+            'text-gray-600 hover:text-[#ff5400] hover:bg-gray-700/30 hover:scale-105': !isActive,
+        },
+    ]
+}
 // 7. 計算 Tailwind 類別：控制容器寬度和內邊距
 const searchClasses = computed(() => ({
     'w-10 px-3': !isExpanded.value, // 未展開時
@@ -80,24 +87,7 @@ const inputClasses = computed(() => ({
 
             <div class="flex justify-center">
                 <nav class="flex items-center space-x-10 text-sm">
-                    <a
-                        href="#"
-                        v-for="link in navLinks"
-                        :key="link.name"
-                        :class="[
-                            'px-6 py-2.5 rounded-full cursor-pointer transition-all duration-100 ease-in-out whitespace-nowrap text-base font-semibold',
-                            {
-                                'bg-orange-100 text-[#ff5400] shadow-lg scale-105 border-b-3 border-[#ff5400]': link.active,
-                                'text-gray-600 hover:text-[#ff5400] hover:bg-gray-700/30 hover:scale-105': !link.active,
-                            },
-                        ]"
-                        @click="
-                            ((link.active = true),
-                            navLinks.forEach((x) => {
-                                if (x !== link) x.active = false
-                            }))
-                        "
-                    >
+                    <a href="#" v-for="link in navLinks" :key="link.name" :class="getLinkClasses(link.name)" @click="emit('change-page', link.name)">
                         {{ link.name }}
                     </a>
                 </nav>

@@ -40,7 +40,9 @@ async function login() {
                         <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 border-gray-300 rounded" />
                         <label for="remember-me" class="ml-2 block text-gray-900"> Remember Me </label>
                     </div>
-                    <a href="#" @click.prevent="$emit('forgetpassword')" class="font-bold text-black text-xs">Forget your password ?</a>
+                    <button class="px-3 py-0.5 rounded-full transition inline-flex items-center text-sm hover:bg-white">
+                        <a href="#" @click.prevent="$emit('forgetpassword')" class="font-bold text-black text-xs">Forget your password ?</a>
+                    </button>
                 </div>
                 <div>
                     <button
