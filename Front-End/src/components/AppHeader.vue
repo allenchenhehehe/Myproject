@@ -1,6 +1,11 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-const navLinks = ref([{ name: 'Home', active: 'true' }, { name: 'TVSeries' }, { name: 'Animations' }, { name: 'Movies' }, { name: 'New & Popular' }])
+import { ref, computed, onMounted } from 'vue'
+const navLinks = ref([
+    { name: 'Home', active: true },
+    { name: 'My Fridge', active: false },
+    { name: 'Recipes', active: false },
+    { name: 'Shopping List', active: false },
+])
 // 【注意】請確保您已安裝並導入 Icon 組件，例如：
 // import { Icon } from '@iconify/vue';
 
@@ -54,7 +59,7 @@ const handleInputBlur = () => {
 const searchClasses = computed(() => ({
     'w-10 px-3': !isExpanded.value, // 未展開時
     'w-64 px-5': isExpanded.value, // 展開時
-    'bg-white/20': isLocked.value, // 鎖定時提供更亮的背景，作為視覺提示
+    'bg-gray-400': isLocked.value, // 鎖定時提供更亮的背景，作為視覺提示
 }))
 
 // 8. 計算 Tailwind 類別：控制輸入框的透明度和寬度
@@ -62,28 +67,36 @@ const inputClasses = computed(() => ({
     // 未展開時：隱藏、不可點擊、寬度為零
     'opacity-0 pointer-events-none w-0': !isExpanded.value,
     // 展開時：完全顯示、佔滿空間、右側留白給圖標
-    'opacity-100 pr-6 w-full': isExpanded.value,
+    'opacity-100 pr-6 w-full bg-transparent': isExpanded.value,
 }))
 </script>
 
 <template>
-    <header class="fixed top-0 w-full max-w-screen overflow-x-hidden z-50 bg-[#000000]/90 backdrop-blur-sm">
+    <header class="fixed top-0 w-full max-w-screen overflow-x-hidden z-50 bg-gray-100 shadow-sm">
         <div class="px-8 py-4 relative">
             <div class="absolute left-8 top-1/2 -translate-y-1/2 z-10">
-                <div class="text-3xl font-bold text-[#ff5400]">5Dmax</div>
+                <div class="text-3xl font-bold text-[#ff5400]">Pantry Pilot</div>
             </div>
 
             <div class="flex justify-center">
-                <nav class="items-center space-x-6 text-sm">
+                <nav class="flex items-center space-x-10 text-sm">
                     <a
                         href="#"
                         v-for="link in navLinks"
                         :key="link.name"
-                        :class="{
-                            'text-white font-bold': link.active,
-                            'text-[#757575] hover:text-[#ff5400]': !link.active,
-                        }"
-                        class="text-base font-medium transition-colors"
+                        :class="[
+                            'px-6 py-2.5 rounded-full cursor-pointer transition-all duration-100 ease-in-out whitespace-nowrap text-base font-semibold',
+                            {
+                                'bg-orange-100 text-[#ff5400] shadow-lg scale-105 border-b-3 border-[#ff5400]': link.active,
+                                'text-gray-600 hover:text-[#ff5400] hover:bg-gray-700/30 hover:scale-105': !link.active,
+                            },
+                        ]"
+                        @click="
+                            ((link.active = true),
+                            navLinks.forEach((x) => {
+                                if (x !== link) x.active = false
+                            }))
+                        "
                     >
                         {{ link.name }}
                     </a>
@@ -94,11 +107,11 @@ const inputClasses = computed(() => ({
                 <div
                     :class="[
                         // 基礎樣式：霧化玻璃、圓角、過渡動畫
-                        'relative flex items-center bg-white/10 backdrop-blur-sm rounded-full py-2',
+                        'relative flex items-center bg-gray-300  rounded-full py-2',
                         'transition-all duration-300 ease-out cursor-pointer',
                         // 懸停/鎖定狀態的視覺差異
-                        { 'hover:bg-white/15': !isLocked },
-                        { 'bg-white/20': isLocked },
+                        { 'hover:bg-gray-400': !isLocked },
+                        { 'bg-gray-400': isLocked },
                         searchClasses, // 應用計算屬性來控制寬度
                     ]"
                     @mouseenter="handleMouseEnter"
@@ -110,8 +123,8 @@ const inputClasses = computed(() => ({
                         type="text"
                         placeholder="Search..."
                         :class="[
-                            'shrink-0 bg-transparent text-white placeholder-gray-400 focus:outline-none text-sm',
-                            'transition-all duration-300 ease-in-out',
+                            'shrink-0  text-gray-800 placeholder-gray-800 focus:outline-none text-sm',
+                            'transition-all duration-300 ease-in-out ',
                             inputClasses, // 應用計算屬性來控制透明度和寬度
                         ]"
                         @click.stop
@@ -121,14 +134,14 @@ const inputClasses = computed(() => ({
 
                     <Icon
                         icon="ic:round-search"
-                        class="w-4 h-4 text-white absolute top-1/2 -translate-y-1/2"
+                        class="w-4 h-4 text-[#ff5400] absolute top-1/2 -translate-y-1/2"
                         :class="{ 'right-3': !isExpanded, 'right-5': isExpanded }"
                     />
                 </div>
 
                 <div>
                     <button
-                        class="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full px-5 py-2 transition duration-150 ease-in-out flex items-center"
+                        class="bg-gray-300 hover:bg-gray-400 text-[#ff5400] rounded-full px-5 py-2 transition duration-150 ease-in-out flex items-center"
                     >
                         <Icon icon="mdi:account" class="w-4 h-4" />
                     </button>

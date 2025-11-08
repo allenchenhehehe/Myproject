@@ -7,7 +7,7 @@ async function resetPassword() {
     if (email.value) {
         message.value = '密碼重設連結已發送到您的電子郵件。'
         console.log(`模擬重設密碼：發送連結到 ${email.value}`)
-        setTimeout(() => emits('login'), 3000)
+        setTimeout(() => emits('login'), 2000)
     } else {
         message.value = '請輸入有效的電子郵件地址。'
     }
@@ -22,7 +22,7 @@ async function resetPassword() {
                 <div
                     v-if="message"
                     :class="{ 'text-black': message.includes('成功'), 'text-red-600': message.includes('請輸入') }"
-                    class="text-sm font-medium text-center text-black"
+                    class="text-m font-medium text-center text-black"
                 >
                     {{ message }}
                 </div>

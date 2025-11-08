@@ -1,7 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
-import 'normalize.css'
 import './styles/style.css'
 import { Icon } from '@iconify/vue'
 const app = createApp(App)

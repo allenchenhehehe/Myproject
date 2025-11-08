@@ -13,7 +13,7 @@ const gotoForget = () => (status.value = STATUS_FORGET_PASSWORD)
 </script>
 
 <template>
-    <div class="min-h-screen bg-[#757575] text-white font-sans overflow-x-hidden">
+    <div class="min-h-screen bg-[#fefae0] text-gray-800 overflow-x-hidden">
         <Login @signup="gotoSignup" @navbar="gotoNavbar" @forgetpassword="gotoForget" v-if="status == STATUS_LOGIN" />
         <SignUp @login="gotoLogin" v-if="status == STATUS_SIGNUP" />
         <AppHeader v-if="status == STATUS_NAVBAR" />
