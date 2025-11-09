@@ -7,7 +7,6 @@ async function login() {
     const isLoginSuccessful = true
     if (isLoginSuccessful) {
         emits('navbar')
-        console.log("模擬登入成功。觸發 'navbar' 事件。")
     }
 }
 </script>

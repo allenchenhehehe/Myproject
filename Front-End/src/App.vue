@@ -4,11 +4,11 @@ import Login from './components/Users/Login.vue'
 import SignUp from './components/Users/SignUp.vue'
 import Navbar from './components/Users/Navbar.vue'
 import ForgetPassword from './components/Users/ForgetPassword.vue'
-import Home from './components/Users/Task/Home.vue'
-import MyFridge from './components/Users/Task/MyFridge.vue'
-import Recipes from './components/Users/Task/Recipes.vue'
-import ShoppingList from './components/Users/Task/ShoppingList.vue'
-import { STATUS_LOGIN, STATUS_SIGNUP, STATUS_APP, STATUS_FORGET_PASSWORD, STATUS_FRIDGE } from './libs/constants'
+import Home from './components/ApplicationSection/Home.vue'
+import MyFridge from './components/ApplicationSection/MyFridge.vue'
+import Recipes from './components/ApplicationSection/Recipes.vue'
+import ShoppingList from './components/ApplicationSection/ShoppingList.vue'
+import { STATUS_LOGIN, STATUS_SIGNUP, STATUS_APP, STATUS_FORGET_PASSWORD } from './libs/constants'
 const status = ref(STATUS_LOGIN)
 const currentPage = ref('Home')
 const gotoSignup = () => (status.value = STATUS_SIGNUP)
@@ -17,20 +17,6 @@ const gotoApp = () => (status.value = STATUS_APP)
 const handlePageChange = (pageName) => {
     currentPage.value = pageName
 }
-const currentPageComponent = computed(() => {
-    switch (currentPage.value) {
-        case 'Home':
-            return Home
-        case 'My Fridge':
-            return MyFridge
-        case 'Recipes':
-            return Recipes
-        case 'Shopping List':
-            return ShoppingList
-        default:
-            return Home
-    }
-})
 const gotoForget = () => (status.value = STATUS_FORGET_PASSWORD)
 </script>
 
@@ -39,7 +25,10 @@ const gotoForget = () => (status.value = STATUS_FORGET_PASSWORD)
     <SignUp @login="gotoLogin" v-if="status == STATUS_SIGNUP" />
     <ForgetPassword @login="gotoLogin" v-if="status == STATUS_FORGET_PASSWORD" />
     <div v-if="status == STATUS_APP" class="min-h-screen bg-[#fefae0] text-gray-800 overflow-x-hidden">
-        <Navbar :currentPage="currentPage" @change-page="handlePageChange" />
-        <component :is="currentPageComponent" />
+        <Navbar @change-page="handlePageChange" />
+        <Home v-if="currentPage == 'Home'" />
+        <MyFridge v-if="currentPage == 'My Fridge'" />
+        <Recipes v-if="currentPage == 'Recipes'" />
+        <ShoppingList v-if="currentPage == 'Shopping List'" />
     </div>
 </template>
