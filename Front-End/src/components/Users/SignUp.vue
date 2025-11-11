@@ -17,7 +17,7 @@ async function signup() {
         <div class="max-w-md w-full p-9 flex flex-col justify-center bg-white/70 backdrop-blur-[20px] rounded-xl shadow-2xl border border-white/40">
             <h2 class="text-black text-3xl font-semibold text-center mb-8">Sign Up</h2>
 
-            <form class="space-y-6">
+            <form class="space-y-8">
                 <div class="flex items-center space-x-5">
                     <Icon icon="mdi:account-plus" class="text-3xl text-black" />
                     <input

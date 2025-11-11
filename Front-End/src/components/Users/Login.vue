@@ -15,7 +15,7 @@ async function login() {
         <div class="max-w-md w-full p-12 flex flex-col justify-center bg-white/70 backdrop-blur-[20px] rounded-xl shadow-2xl border border-white/40">
             <h2 class="text-black text-3xl font-semibold text-center mb-8">Login</h2>
 
-            <form class="space-y-6">
+            <form class="space-y-8">
                 <div class="flex items-center space-x-5">
                     <Icon icon="mdi:email" class="text-3xl text-black" />
                     <input

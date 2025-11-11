@@ -5,7 +5,7 @@ import AccountMenu from './AccountMenu.vue'
 
 const emit = defineEmits(['change-page'])
 const currentPage = ref('Home')
-const navLinks = ref([{ name: 'Home' }, { name: 'My Fridge' }, { name: 'Recipes' }, { name: 'Shopping List' }])
+const navLinks = ref([{ name: 'Home' }, { name: 'My Fridge' }, { name: 'Recipes' }, { name: 'Shopping List' }, { name: 'Comment' }])
 
 const isActive = (pageName) => {
     return currentPage.value === pageName
@@ -25,7 +25,7 @@ const handlePageChange = (pageName) => {
             </div>
 
             <div class="flex justify-center">
-                <nav class="flex items-center space-x-10 text-sm">
+                <nav class="flex items-center space-x-6 text-sm">
                     <a
                         href="#"
                         v-for="link in navLinks"

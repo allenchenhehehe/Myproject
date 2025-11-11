@@ -42,7 +42,7 @@ const handleInputBlur = () => {
 
 const searchClasses = computed(() => ({
     'w-10 px-3': !isExpanded.value, // 未展開時
-    'w-64 px-5': isExpanded.value, // 展開時
+    'w-56 px-5': isExpanded.value, // 展開時
     'bg-gray-400': isLocked.value, // 鎖定時提供更亮的背景，作為視覺提示
 }))
 

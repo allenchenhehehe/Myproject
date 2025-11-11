@@ -18,7 +18,7 @@ async function resetPassword() {
         <div class="max-w-md w-full p-12 flex flex-col justify-center bg-white/70 backdrop-blur-[20px] rounded-xl shadow-2xl border border-white/40">
             <h2 class="text-black text-3xl font-semibold text-center mb-8">Find your password</h2>
 
-            <form @submit.prevent="resetPassword" class="space-y-6">
+            <form @submit.prevent="resetPassword" class="space-y-8">
                 <div
                     v-if="message"
                     :class="{ 'text-black': message.includes('成功'), 'text-red-600': message.includes('請輸入') }"
