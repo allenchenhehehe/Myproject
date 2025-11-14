@@ -134,11 +134,14 @@ function saveEdit(updatedData) {
 </script>
 <template>
     <div class="mt-28 max-w-4xl mx-auto px-4">
-        <h1 class="text-4xl font-bold text-gray-800 mb-8">我的冰箱</h1>
+        <div class="flex justify-center items-center">
+            <h1 class="text-4xl font-bold text-gray-800 mb-8">我的冰箱</h1>
+        </div>
+
         <div class="space-y-4">
             <div v-for="category in categories" :key="category.key">
                 <div class="bg-white rounded-lg shadow-md p-4 cursor-pointer" @click="toggleCategory(category.key)">
-                    <div class="flex justify-between items-center">
+                    <div class="flex justify-between items-center p-2">
                         <span>
                             {{ category.name }}
                         </span>
@@ -153,7 +156,7 @@ function saveEdit(updatedData) {
                         :key="ingredient.id"
                         class="bg-gray-50 rounded p-3 flex justify-between items-center"
                     >
-                        <div>
+                        <div class="p-2 space-y-1">
                             <div>{{ ingredient.name }}</div>
                             <div>{{ ingredient.quantity }}{{ ingredient.unit }}</div>
                         </div>

@@ -1,219 +1,148 @@
 <script setup>
-import { ref } from 'vue'
-
+import { ref, computed, defineEmits } from 'vue'
+const emit = defineEmits(['gotorecipedetail'])
 const mockRecipes = [
     {
         id: '1',
         title: '番茄炒蛋',
         description: '簡單快手菜，營養豐富',
-        difficulty: 3,
-        cooking_time: 15,
-        steps: '1. 打蛋 2. 炒蛋 3. 加番茄',
+        dificulty: 3,
+        coocking_time: 12,
+        step: '1. 打蛋\n 2. 炒蛋\n 3. 加番茄',
         creator_id: 'system',
         is_public: true,
         ingredients: [
-            { ingredient_id: 1, ingredient_name: '番茄', quantity: 2, unit: '個' },
+            { ingredient_id: 4, ingredient_name: '番茄', quantity: 2, unit: '個' },
             { ingredient_id: 3, ingredient_name: '雞蛋', quantity: 3, unit: '個' },
         ],
     },
     {
         id: '2',
-        title: '炒洋蔥雞蛋',
+        title: '洋蔥炒蛋',
         description: '經典家常菜，做法簡單',
-        difficulty: 2,
-        cooking_time: 20,
-        steps: '1. 切洋蔥 2. 炒洋蔥 3. 打蛋炒',
+        dificulty: 2,
+        coocking_time: 20,
+        step: '1.切洋蔥\n 2. 炒洋蔥\n 3. 打蛋炒',
         creator_id: 'system',
         is_public: true,
         ingredients: [
-            { ingredient_id: 2, ingredient_name: '洋蔥', quantity: 1, unit: '個' },
+            { ingredient_id: 1, ingredient_name: '洋蔥', quantity: 1, unit: '個' },
             { ingredient_id: 3, ingredient_name: '雞蛋', quantity: 2, unit: '個' },
         ],
     },
     {
         id: '3',
-        title: '清炒蔬菜',
-        description: '健康清爽的蔬菜料理',
-        difficulty: 2,
-        cooking_time: 15,
-        steps: '1. 準備蔬菜 2. 熱鍋下油 3. 炒蔬菜',
+        title: '威靈頓牛排',
+        description: '高手才能作的菜，做法稍嫌複雜',
+        dificulty: 5,
+        coocking_time: 60,
+        step: '1.小火煎牛排\n2. 烤麵包\n3. 牛排塞進麵包裡',
         creator_id: 'system',
         is_public: true,
         ingredients: [
-            { ingredient_id: 2, ingredient_name: '洋蔥', quantity: 1, unit: '個' },
-            { ingredient_id: 1, ingredient_name: '番茄', quantity: 1, unit: '個' },
+            { ingredient_id: 5, ingredient_name: '牛排', quantity: 1, unit: '塊' },
+            { ingredient_id: 6, ingredient_name: '奶油', quantity: 1, unit: '塊' },
         ],
     },
-    {
-        id: '4',
-        title: '蛋炒飯',
-        description: '快手飯，剩飯利用好選擇',
-        difficulty: 2,
-        cooking_time: 10,
-        steps: '1. 準備冷飯 2. 炒蛋 3. 炒飯',
-        creator_id: 'system',
-        is_public: true,
-        ingredients: [{ ingredient_id: 3, ingredient_name: '雞蛋', quantity: 2, unit: '個' }],
-    },
 ]
-
 const recipes = ref(mockRecipes)
-const filterByMyIngredients = ref(false)
-const selectedCookingTime = ref('all')
-
-const renderStars = (difficulty) => {
-    return '⭐'.repeat(difficulty) + '☆'.repeat(5 - difficulty)
+const filterByMyIngredient = ref(false) //要不要根據我的食材篩選
+const selectByCookingTime = ref('all') //根據時長
+const filterRecipes = computed(() => {
+    if (selectByCookingTime.value === 'all') {
+        return recipes.value
+    } else if (selectByCookingTime.value === '15') {
+        return recipes.value.filter((recipe) => {
+            return recipe.coocking_time <= 15
+        })
+    } else if (selectByCookingTime.value === '30') {
+        return recipes.value.filter((recipe) => {
+            return recipe.coocking_time <= 30
+        })
+    } else if (selectByCookingTime.value === '60') {
+        return recipes.value.filter((recipe) => {
+            return recipe.coocking_time >= 60
+        })
+    }
+})
+function handleCookRecipe(recipe) {
+    emit('gotorecipedetail', recipe)
 }
 </script>
-
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50">
-        <div class="mt-28 max-w-7xl mx-auto px-4 pb-12">
-            <!-- 標題區 -->
-            <div class="mb-8">
-                <h1 class="text-5xl font-bold text-gray-800 mb-2">🍳 食譜</h1>
-                <p class="text-gray-600">發現美味食譜，開始烹飪之旅</p>
+    <div class="mt-28 max-w-7xl mx-auto px-4">
+        <div class="flex justify-center items-center"><h1 class="mb-8 text-4xl">想做些甚麼料理嗎!</h1></div>
+
+        <div class="bg-white p-4 rounded-lg mb-4 shadow-md flex flex-col items-center justify-center space-y-6">
+            <div>
+                <h3 class="text-lg font-bold text-gray-500">食譜類型</h3>
             </div>
 
-            <!-- 篩選區 -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-                <!-- 食譜類型篩選 -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-bold text-gray-700 mb-3">食譜類型</h3>
-                    <div class="flex gap-3">
-                        <button
-                            @click="filterByMyIngredients = false"
-                            :class="
-                                !filterByMyIngredients
-                                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            "
-                            class="px-6 py-2 rounded-full font-semibold transition-all duration-200"
-                        >
-                            📚 所有食譜
-                        </button>
-                        <button
-                            @click="filterByMyIngredients = true"
-                            :class="
-                                filterByMyIngredients
-                                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md'
-                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            "
-                            class="px-6 py-2 rounded-full font-semibold transition-all duration-200"
-                        >
-                            ✅ 根據我的食材
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 烹飪時間篩選 -->
-                <div>
-                    <h3 class="text-sm font-bold text-gray-700 mb-3">烹飪時間</h3>
-                    <div class="flex gap-2 flex-wrap">
-                        <button
-                            @click="selectedCookingTime = 'all'"
-                            :class="selectedCookingTime === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                            class="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
-                        >
-                            所有
-                        </button>
-                        <button
-                            @click="selectedCookingTime = '15'"
-                            :class="selectedCookingTime === '15' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                            class="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
-                        >
-                            ⚡ 15分以下
-                        </button>
-                        <button
-                            @click="selectedCookingTime = '30'"
-                            :class="selectedCookingTime === '30' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                            class="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
-                        >
-                            ⏱ 30分以下
-                        </button>
-                        <button
-                            @click="selectedCookingTime = '60'"
-                            :class="selectedCookingTime === '60' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                            class="px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200"
-                        >
-                            🍲 1小時以上
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 食譜卡片網格 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div
-                    v-for="recipe in recipes"
-                    :key="recipe.id"
-                    class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group hover:transform hover:scale-105"
+            <div class="flex gap-3">
+                <button
+                    @click="filterByMyIngredient = false"
+                    :class="!filterByMyIngredient ? 'text-white bg-amber-500' : 'text-gray-200 bg-gray-700'"
+                    class="rounded font-semibold px-3 py-2 cursor-pointer"
                 >
-                    <!-- 卡片頭部 - 帶漸層背景 -->
-                    <div class="bg-gradient-to-r from-orange-400 to-pink-400 h-24 relative overflow-hidden">
-                        <div class="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-300">
-                            <div class="text-6xl">🍳</div>
-                        </div>
-                    </div>
-
-                    <!-- 卡片內容 -->
-                    <div class="p-5">
-                        <!-- 標題 -->
-                        <h3 class="text-xl font-bold text-gray-800 mb-1 line-clamp-2">{{ recipe.title }}</h3>
-
-                        <!-- 描述 -->
-                        <p class="text-sm text-gray-600 mb-4 line-clamp-2">{{ recipe.description }}</p>
-
-                        <!-- 難度和時間 -->
-                        <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
-                            <div class="flex items-center gap-1">
-                                <span class="text-xs font-semibold text-gray-700">難度</span>
-                                <span class="text-sm">{{ renderStars(recipe.difficulty) }}</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span class="text-lg">⏱</span>
-                                <span class="text-sm font-semibold text-gray-700">{{ recipe.cooking_time }} 分</span>
-                            </div>
-                        </div>
-
-                        <!-- 所需食材預覽 -->
-                        <div class="mb-4">
-                            <p class="text-xs font-semibold text-gray-700 mb-2">所需食材</p>
-                            <div class="flex flex-wrap gap-1">
-                                <span
-                                    v-for="ing in recipe.ingredients.slice(0, 3)"
-                                    :key="ing.ingredient_id"
-                                    class="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full"
-                                >
-                                    {{ ing.ingredient_name }}
-                                </span>
-                                <span v-if="recipe.ingredients.length > 3" class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
-                                    +{{ recipe.ingredients.length - 3 }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- 按鈕 -->
-                        <div class="flex gap-2">
-                            <button
-                                class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200"
-                            >
-                                👁 查看詳情
-                            </button>
-                            <button
-                                class="flex-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-semibold transition-colors duration-200"
-                            >
-                                🍽 我要做
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    所有食譜
+                </button>
+                <button
+                    @click="filterByMyIngredient = true"
+                    :class="filterByMyIngredient ? 'text-white bg-amber-500' : 'text-gray-200 bg-gray-700'"
+                    class="rounded font-semibold px-3 py-2 cursor-pointer"
+                >
+                    根據我的食材
+                </button>
             </div>
 
-            <!-- 空狀態 -->
-            <div v-if="recipes.length === 0" class="text-center py-16">
-                <p class="text-4xl mb-4">🍽️</p>
-                <p class="text-gray-600 text-lg">暫時沒有符合條件的食譜</p>
+            <div>
+                <h3 class="text-lg font-bold text-gray-500">烹飪時間</h3>
+            </div>
+
+            <div class="flex gap-2">
+                <button
+                    @click="selectByCookingTime = 'all'"
+                    :class="selectByCookingTime == 'all' ? 'text-white bg-amber-500' : 'text-gray-300 bg-gray-700'"
+                    class="rounded font-semibold px-3 py-1 cursor-pointer"
+                >
+                    所有
+                </button>
+                <button
+                    @click="selectByCookingTime = '15'"
+                    :class="selectByCookingTime == '15' ? 'text-white bg-amber-500' : 'text-gray-300 bg-gray-700'"
+                    class="rounded font-semibold px-3 py-1 cursor-pointer"
+                >
+                    小於15分鐘
+                </button>
+                <button
+                    @click="selectByCookingTime = '30'"
+                    :class="selectByCookingTime == '30' ? 'text-white bg-amber-500' : 'text-gray-300 bg-gray-700'"
+                    class="rounded font-semibold px-3 py-1 cursor-pointer"
+                >
+                    小於30分鐘
+                </button>
+                <button
+                    @click="selectByCookingTime = '60'"
+                    :class="selectByCookingTime == '60' ? 'text-white bg-amber-500' : 'text-gray-300 bg-gray-700'"
+                    class="rounded font-semibold px-3 py-1 cursor-pointer"
+                >
+                    60分鐘以上
+                </button>
+            </div>
+        </div>
+        <div class="flex flex-wrap gap-6 mt-8">
+            <div v-for="recipe in filterRecipes" :key="recipe.id" class="bg-white rounded-lg p-4 shadow-md">
+                <h3 class="font-bold text-xl mb-2">{{ recipe.title }}</h3>
+                <p class="text-sm text-gray-500 mb-4">{{ recipe.description }}</p>
+                <div class="flex justify-between mb-1">
+                    <span class="text-sm">{{ recipe.dificulty }}/5</span>
+                    <span class="text-sm">{{ recipe.coocking_time }}分</span>
+                </div>
+                <div class="flex gap-2">
+                    <button @click="handleCookRecipe(recipe)" class="w-full bg-amber-300 text-black text-sm px-3 py-2 rounded cursor-pointer">
+                        我要做!
+                    </button>
+                </div>
             </div>
         </div>
     </div>

@@ -7,10 +7,12 @@ import ForgetPassword from './components/Users/ForgetPassword.vue'
 import Home from './components/ApplicationSection/Home.vue'
 import MyFridge from './components/ApplicationSection/MyFridge.vue'
 import Recipes from './components/ApplicationSection/Recipes.vue'
+import RecipeDetail from './components/ApplicationSection/RecipeDetail.vue'
 import ShoppingList from './components/ApplicationSection/ShoppingList.vue'
 import { STATUS_LOGIN, STATUS_SIGNUP, STATUS_APP, STATUS_FORGET_PASSWORD } from './libs/constants'
 const status = ref(STATUS_LOGIN)
 const currentPage = ref('Home')
+const selectedRecipe = ref(null)
 const gotoSignup = () => (status.value = STATUS_SIGNUP)
 const gotoLogin = () => (status.value = STATUS_LOGIN)
 const gotoApp = () => (status.value = STATUS_APP)
@@ -18,6 +20,10 @@ const handlePageChange = (pageName) => {
     currentPage.value = pageName
 }
 const gotoForget = () => (status.value = STATUS_FORGET_PASSWORD)
+const handledetail = (recipe) => {
+    selectedRecipe.value = recipe
+    currentPage.value = 'RecipeDetail'
+}
 </script>
 
 <template>
@@ -28,7 +34,8 @@ const gotoForget = () => (status.value = STATUS_FORGET_PASSWORD)
         <Navbar @change-page="handlePageChange" />
         <Home v-if="currentPage == 'Home'" />
         <MyFridge v-if="currentPage == 'My Fridge'" />
-        <Recipes v-if="currentPage == 'Recipes'" />
+        <Recipes @gotorecipedetail="handledetail" v-if="currentPage == 'Recipes'" />
+        <RecipeDetail v-if="currentPage == 'RecipeDetail'" :recipe="selectedRecipe" />
         <ShoppingList v-if="currentPage == 'Shopping List'" />
     </div>
 </template>
