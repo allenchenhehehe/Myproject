@@ -24,6 +24,9 @@ const handledetail = (recipe) => {
     selectedRecipe.value = recipe
     currentPage.value = 'RecipeDetail'
 }
+const handleGoBackToRecipes = () => {
+    currentPage.value = 'Recipes'
+}
 </script>
 
 <template>
@@ -35,7 +38,7 @@ const handledetail = (recipe) => {
         <Home v-if="currentPage == 'Home'" />
         <MyFridge v-if="currentPage == 'My Fridge'" />
         <Recipes @gotorecipedetail="handledetail" v-if="currentPage == 'Recipes'" />
-        <RecipeDetail v-if="currentPage == 'RecipeDetail'" :recipe="selectedRecipe" />
+        <RecipeDetail v-if="currentPage == 'RecipeDetail'" :recipe="selectedRecipe" @handlegoback="handleGoBackToRecipes" />
         <ShoppingList v-if="currentPage == 'Shopping List'" />
     </div>
 </template>

@@ -11,6 +11,7 @@ const mockRecipes = [
         step: '1. 打蛋\n 2. 炒蛋\n 3. 加番茄',
         creator_id: 'system',
         is_public: true,
+        image_url: '/TomatoEgg.webp',
         ingredients: [
             { ingredient_id: 4, ingredient_name: '番茄', quantity: 2, unit: '個' },
             { ingredient_id: 3, ingredient_name: '雞蛋', quantity: 3, unit: '個' },
@@ -25,6 +26,7 @@ const mockRecipes = [
         step: '1.切洋蔥\n 2. 炒洋蔥\n 3. 打蛋炒',
         creator_id: 'system',
         is_public: true,
+        image_url: '/TomatoEgg.webp',
         ingredients: [
             { ingredient_id: 1, ingredient_name: '洋蔥', quantity: 1, unit: '個' },
             { ingredient_id: 3, ingredient_name: '雞蛋', quantity: 2, unit: '個' },
@@ -39,6 +41,7 @@ const mockRecipes = [
         step: '1.小火煎牛排\n2. 烤麵包\n3. 牛排塞進麵包裡',
         creator_id: 'system',
         is_public: true,
+        image_url: '/TomatoEgg.webp',
         ingredients: [
             { ingredient_id: 5, ingredient_name: '牛排', quantity: 1, unit: '塊' },
             { ingredient_id: 6, ingredient_name: '奶油', quantity: 1, unit: '塊' },
@@ -130,18 +133,29 @@ function handleCookRecipe(recipe) {
                 </button>
             </div>
         </div>
+
         <div class="flex flex-wrap gap-6 mt-8">
-            <div v-for="recipe in filterRecipes" :key="recipe.id" class="bg-white rounded-lg p-4 shadow-md">
-                <h3 class="font-bold text-xl mb-2">{{ recipe.title }}</h3>
-                <p class="text-sm text-gray-500 mb-4">{{ recipe.description }}</p>
-                <div class="flex justify-between mb-1">
-                    <span class="text-sm">{{ recipe.dificulty }}/5</span>
-                    <span class="text-sm">{{ recipe.coocking_time }}分</span>
-                </div>
-                <div class="flex gap-2">
-                    <button @click="handleCookRecipe(recipe)" class="w-full bg-amber-300 text-black text-sm px-3 py-2 rounded cursor-pointer">
-                        我要做!
-                    </button>
+            <div
+                v-for="recipe in filterRecipes"
+                :key="recipe.id"
+                class="bg-white rounded-lg overflow-hidden shadow-md w-[calc(50%-12px)] shrink-0 flex"
+            >
+                <img :src="recipe.image_url" :alt="recipe.title" class="w-1/3 object-cover h-48" />
+                <div class="flex flex-col justify-between flex-1 p-4">
+                    <div>
+                        <h3 class="font-bold text-xl mb-2">{{ recipe.title }}</h3>
+                        <p class="text-sm text-gray-500 mb-4">{{ recipe.description }}</p>
+                    </div>
+
+                    <div class="flex justify-between mb-3">
+                        <span class="text-sm">難度:&nbsp;&nbsp;{{ recipe.dificulty }}/5</span>
+                        <span class="text-sm">大約:&nbsp;&nbsp;{{ recipe.coocking_time }}分</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button @click="handleCookRecipe(recipe)" class="w-full bg-amber-300 text-black text-sm px-3 py-2 rounded cursor-pointer">
+                            我要做!
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
