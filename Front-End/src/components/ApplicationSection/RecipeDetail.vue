@@ -1,12 +1,37 @@
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue'
 const recipe = ref(null)
-const emit = defineEmits(['handlegoback'])
+const emit = defineEmits(['handlegoback', 'addToShopping'])
 const props = defineProps({
     recipe: Object,
+    fridgeItems: Array,
 })
 function handleGoBack() {
     emit('handlegoback')
+}
+function addAllToShoppingList() {
+    const timestamp = Date.now()
+    const itemsToAdd = props.recipe.ingredients.map((ingredient, index) => ({
+        id: timestamp + index, // 確保每個 id 都不同
+        ingredient_id: null,
+        ingredient_name: ingredient.ingredient_name,
+        quantity: ingredient.quantity,
+        unit: ingredient.unit,
+        is_purchased: false,
+    }))
+    emit('addToShopping', itemsToAdd, props.recipe.title, props.recipe.id) // 一次發出整個陣列
+}
+function getMissingIngredients() {
+    return props.recipe.ingredients.filter((recipeIng) => {
+        //如果冰箱中「沒有」這個食材
+        return !props.fridgeItems.some((fridgeItem) => fridgeItem.ingredient_id === recipeIng.ingredient_id)
+        //回傳所有「冰箱中沒有」的食材。
+    })
+}
+function getMissingIngredientsText() {
+    return getMissingIngredients()
+        .map((ing) => `${ing.ingredient_name}`)
+        .join('、')
 }
 </script>
 <template>
@@ -19,7 +44,7 @@ function handleGoBack() {
         </div>
 
         <div v-if="props.recipe" class="bg-white rounded-b-lg p-6 gap-6 flex shadow-md">
-            <img :src="props.recipe.image_url" :alt="props.recipe.title" class="w-1/3 object-cover h-full" />
+            <img :src="props.recipe.image_url" :alt="props.recipe.title" class="w-1/3 object-cover" />
             <div class="flex flex-col flex-1 gap-6">
                 <div class="text-gray-500 border-b border-gray-200 pb-4">
                     <h2 class="mb-6 text-4xl font-bold">{{ props.recipe.title }}</h2>
@@ -39,9 +64,16 @@ function handleGoBack() {
                     </div>
                     <div class="flex gap-4 items-center">
                         <div class="flex-1">
-                            <p class="text-red-600">缺少...食材</p>
+                            <p class="text-red-600">
+                                缺少食材:&nbsp;
+                                <span class="font-semibold">
+                                    {{ getMissingIngredientsText() }}
+                                </span>
+                            </p>
                         </div>
-                        <button class="w-1/3 mt-4 bg-gray-500 text-white py-2 rounded">加入購物清單</button>
+                        <button @click="addAllToShoppingList" class="w-1/3 mt-4 bg-gray-500 text-white py-2 rounded cursor-pointer">
+                            加入購物清單
+                        </button>
                     </div>
                 </div>
                 <div>

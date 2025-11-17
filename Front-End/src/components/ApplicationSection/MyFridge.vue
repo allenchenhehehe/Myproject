@@ -1,52 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-
-const mockData = [
-    {
-        id: '1',
-        name: '洋蔥',
-        category: 'vegetable',
-        quantity: 5,
-        unit: '個',
-        purchased_date: '2025-11-03',
-        expired_date: '025-11-12',
-        days_left: 2,
-        is_expired: true,
-    },
-    {
-        id: '2',
-        name: '雞肉',
-        category: 'protein',
-        quantity: 200,
-        unit: '克',
-        purchased_date: '2025-11-05',
-        expired_date: '025-11-11',
-        days_left: 1,
-        is_expired: true,
-    },
-    {
-        id: '3',
-        name: '雞蛋',
-        category: 'protein',
-        quantity: 2,
-        unit: '顆',
-        purchased_date: '2025-11-08',
-        expired_date: '025-11-12',
-        days_left: 2,
-        is_expired: true,
-    },
-    {
-        id: '4',
-        name: '番茄',
-        category: 'vegetable',
-        quantity: 5,
-        unit: '個',
-        purchased_date: '2025-11-03',
-        expired_date: '025-11-30',
-        days_left: 20,
-        is_expired: false,
-    },
-]
+import { ref, defineProps } from 'vue'
+const props = defineProps({ fridgeItems: Array })
 
 /*定義了所有可能的分類及其顯示名稱*/
 const categories = [
@@ -58,13 +12,22 @@ const categories = [
 ]
 
 /*ingredients.value = {'蔬菜':[{id: '1',name: '洋蔥',quantity: 5。。。},{id: '4',name: '番茄',quantity: 5。。。}]}*/
-const ingredients = ref(categorizeIngredients(mockData))
+const ingredients = ref(categorizeIngredients(props.fridgeItems))
 const expandedCategories = ref({
     expiring: false,
     vegetable: false,
     protein: false,
     seasoning: false,
     oil: false,
+})
+const isAddModalOpen = ref(false)
+const newIngredient = ref({
+    name: '',
+    category: 'vegetable',
+    quantity: 1,
+    unit: '個',
+    purchased_date: '',
+    expired_date: '',
 })
 const isEditModalOpen = ref(false)
 const editIngredient = ref(null)
@@ -84,8 +47,7 @@ const editIngredient = ref(null)
 function categorizeIngredients(data) {
     const categorized = {} // 步驟 A：建立空物件
     data.forEach((item) => {
-        // 步驟 B：遍歷每個食材
-        const category = item.category // 步驟 C：取出分類名稱
+        const category = isExpired(item.expired_date) ? 'expiring' : item.category
         // 步驟 D：檢查這個分類是否已經存在
         if (categorized[category] === undefined) {
             categorized[category] = [] // 步驟 E：不存在就建立空陣列
@@ -121,15 +83,40 @@ function saveEdit(updatedData) {
     }
     // 找到要更新的食材，並更新它
     Object.keys(ingredients.value).forEach((category) => {
-        const index = ingredients.value[category].findIndex((item) => item.id === editIngredient.value.id)
-
-        if (index !== -1) {
-            ingredients.value[category][index] = updatedData
-        }
+        ingredients.value[category] = ingredients.value[category].filter((item) => item.id !== editIngredient.value.id)
     })
+
+    const category = isExpired(updatedData.expired_date) ? 'expiring' : updatedData.category
+    if (!ingredients.value[category]) {
+        ingredients.value[category] = []
+    }
+    ingredients.value[category].push(updatedData)
 
     // 關閉 Modal
     closeEditModal()
+}
+function groupByName(data) {
+    const grouped = {}
+    data.forEach((item) => {
+        if (!grouped[item.name]) {
+            grouped[item.name] = []
+        }
+        grouped[item.name].push(item)
+    })
+    return grouped
+}
+function calculateDaysLeft(expiredDate) {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const expired = new Date(expiredDate)
+    expired.setHours(0, 0, 0, 0)
+    const diffTime = expired - today
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays
+}
+
+function isExpired(expiredDate) {
+    return calculateDaysLeft(expiredDate) < 0
 }
 </script>
 <template>
@@ -152,17 +139,22 @@ function saveEdit(updatedData) {
                 </div>
                 <div v-if="expandedCategories[category.key]" class="border-t border-gray-500 space-y-4 p-4">
                     <div
-                        v-for="ingredient in ingredients[category.key]"
-                        :key="ingredient.id"
-                        class="bg-gray-50 rounded p-3 flex justify-between items-center"
+                        v-for="(group, ingredientName) in groupByName(ingredients[category.key] || [])"
+                        :key="ingredientName"
+                        class="border-l-4 border-blue-500 pl-4"
                     >
-                        <div class="p-2 space-y-1">
-                            <div>{{ ingredient.name }}</div>
-                            <div>{{ ingredient.quantity }}{{ ingredient.unit }}</div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button @click="openEditModal(ingredient)" class="bg-blue-500 text-white px-3 py-1 rounded text-sm">編輯</button>
-                            <button @click="deleteIngredient(ingredient.id)" class="bg-red-500 text-white px-3 py-1 rounded text-sm">刪除</button>
+                        <h4 class="font-bold mb-2">{{ ingredientName }}</h4>
+                        <div v-for="ingredient in group" :key="ingredient.id" class="bg-gray-50 rounded p-3 flex justify-between items-center">
+                            <div class="p-2 space-y-1 text-sm">
+                                <div>購買日期: {{ ingredient.purchased_date }}</div>
+                                <div>{{ ingredient.quantity }}{{ ingredient.unit }}</div>
+                                <div class="text-red-500" v-if="isExpired(ingredient.expired_date)">已過期</div>
+                                <div v-else>還有 {{ calculateDaysLeft(ingredient.expired_date) }} 天</div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button @click="openEditModal(ingredient)" class="bg-blue-500 text-white px-3 py-1 rounded text-sm">編輯</button>
+                                <button @click="deleteIngredient(ingredient.id)" class="bg-red-500 text-white px-3 py-1 rounded text-sm">刪除</button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -37,7 +37,7 @@ const handlePageChange = (pageName) => {
                                 'text-gray-500 hover:text-[#ff5400] hover:bg-orange-50 hover:scale-105': !isActive(link.name),
                             },
                         ]"
-                        @click="handlePageChange(link.name)"
+                        @click.prevent="handlePageChange(link.name)"
                     >
                         {{ link.name }}
                     </a>
